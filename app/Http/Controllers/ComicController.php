@@ -41,7 +41,7 @@ class ComicController extends Controller
         $new_comic->fill($data);
         $new_comic->save();
 
-        return redirect()->route('comic.show', $new_comic->id);
+        return redirect()->route('comic.show', $new_comic);
     }
 
     /**
@@ -63,9 +63,11 @@ class ComicController extends Controller
      * @param  \App\Models\Comic  $comic
      * @return \Illuminate\Http\Response
      */
-    public function edit(Comic $comic)
+    public function edit($id)
     {
-        //
+        $comic = Comic::findOrFail($id);
+
+        return view('pages.comic.edit', compact('comic'));
     }
 
     /**
@@ -75,9 +77,23 @@ class ComicController extends Controller
      * @param  \App\Models\Comic  $comic
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Comic $comic)
+    public function update(Request $request, $id)
     {
-        //
+
+        $data = $request->all();
+        $comic = Comic::findOrFail($id);
+        $request->validate(
+            [
+                'title' => 'required|max:50'
+            ],
+            [
+                'title.required' => 'Attention! This field is mandatory.',
+                'title.max' => 'Not longer than 50 words'
+            ]
+        );
+        $comic->update($data);
+
+        return redirect()->route('comic.show', $comic->id)->with('success', "Comic Edited: $comic->title");
     }
 
     /**
@@ -86,8 +102,11 @@ class ComicController extends Controller
      * @param  \App\Models\Comic  $comic
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Comic $comic)
-    {
-        //
+    public function destroy($id)
+    { {
+            $comic = Comic::findOrFail($id);
+            $comic->delete();
+            return redirect()->route('comic.index')->with('success', "Comic Deleted: $comic->title");
+        }
     }
 }

@@ -47,6 +47,22 @@
                     <i class="fa-solid fa-eye"></i>
                   </a>
                 </td>
+                <td>
+                  <form action="{{ route('comic.destroy', $elem->id) }}" method="POST">
+                    @csrf
+                    @method('DELETE')
+                    <button class="btn btn-danger" type="submit">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </form>
+                </td>
+                <td>
+                  <a href="{{ route('comic.edit', $elem->id) }}">
+                    <button class="btn btn-primary">
+                        <i class="fa-solid fa-pen"></i>
+                    </button>
+                </a>
+                </td>
           </tr>   
             @endforeach
           
